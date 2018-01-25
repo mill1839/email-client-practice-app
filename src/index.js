@@ -1,27 +1,42 @@
-/**
- * @flow
- */
+import store from './store';
 
-// example of generating HTML with js
-function renderSidebar() {
-  const sidebarContents = `
+function renderThreadList() {
+  var inbox = store.mailboxes.INBOX;
+  var threadIDs = inbox.threadIds;
+  var messages = store.messages;
+
+  return threadIDs.map((id) => {
+    var messageDetails = messages[id].payload.headers;
+    var sender = messageDetails.find(detail => detail.name === 'From').value;
+    var timestamp = messageDetails.find(detail => detail.name === 'Date').value;
+    var subject = messageDetails.find(detail => detail.name === 'Subject').value;
+    var snippet = messages[id].snippet;
+
+    return `
+    <li>
+      <button class="email-item" type="button">
+        <div class="sender-details">
+          <p>${sender}</p>
+          <span class="timestamp">${timestamp}</span>
+        </div>
+        <p class="email-subject">${subject}</p>
+        <p class="snippet">${snippet}</p>
+      </button>
+    </li>
+    `;
+  }).join('');
+}
+
+function renderInboxMenu() {
+  var inboxMenuContents = `
     <h2 class="email-header">Inbox</h2>
     <ul class="email-list">
-      <li>
-        <button class="email-item" type="button">
-          <div class="sender-details">
-            <p>Email sender</p>
-            <span>Timestamp</span>
-          </div>
-          <p class="email-subject">Email1 subject</p>
-          <p>Email snippet</p>
-        </button>
-      </li>
+      ${renderThreadList()}
     </ul>
   `;
 
-  const container = document.querySelector('.email-list-container');
-  if (container != null) container.innerHTML = sidebarContents;
+  var container = document.querySelector('.email-list-container');
+  if (container != null) container.innerHTML = inboxMenuContents;
 }
 
-renderSidebar();
+renderInboxMenu();
