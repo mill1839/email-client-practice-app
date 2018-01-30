@@ -10,13 +10,13 @@ function renderThreadList() {
     var sender = messageDetails.find(detail => detail.name === 'From').value;
     var timestamp = messageDetails.find(detail => detail.name === 'Date').value;
     var subject = messageDetails.find(detail => detail.name === 'Subject').value;
-    var snippet = messages[id].snippet;
-
+    var [lastMessage] = store.threads[id].messages.slice(-1);
+    var snippet = messages[lastMessage.id].snippet;
     return `
     <li>
       <button class="email-item" type="button">
         <div class="sender-details">
-          <p>${sender}</p>
+          <p>${formatSender(sender)}</p>
           <span class="timestamp">${timestamp}</span>
         </div>
         <p class="email-subject">${subject}</p>
@@ -25,6 +25,10 @@ function renderThreadList() {
     </li>
     `;
   }).join('');
+}
+
+function formatSender(sender) {
+  return sender.split(" \\")[0];
 }
 
 function renderInboxMenu() {
