@@ -2,7 +2,7 @@
 $gray: #ccc;
 $lightgray: #eee;
 
-$system-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+$font: 'Playfair Display', serif;
 
 // Base styles
 html {
@@ -16,7 +16,7 @@ html {
 }
 
 body {
-  font-family: $system-font;
+  font-family: $font;
 }
 
 .wrapper {
