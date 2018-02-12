@@ -4,17 +4,15 @@ function renderMailboxList() {
   var mailboxes = Object.keys(store.mailboxes);
 
   return mailboxes.map(function(mailbox){
-  console.log(mailbox);
     return `
     <li>
-      <button class="menu-item" type="button">${mailbox}</button>
+      <button class="menu-item" type="button" data-mailbox="${mailbox}">${mailbox}</button>
     </li>
     `;
   }).join('');
 }
 
 function renderMailboxMenu() {
-  console.log(mailboxMenu, 'test');
   var mailboxMenu = `
     <ul class="mailbox-list">
       ${renderMailboxList()}
@@ -68,7 +66,90 @@ function renderInboxMenu() {
   if (container != null) container.innerHTML = inboxMenuContents;
 }
 
-renderInboxMenu();
-renderMailboxList();
+function addClickHandler() {
+  var buttons = document.querySelectorAll('[data-mailbox]');
 
+  buttons.forEach(function(button){
+    if(button.dataset.mailbox === 'INBOX'){
+      button.classList.add('active');
+      renderThreadList(button.dataset.mailbox);
+    }
+
+    button.addEventListener('click', function(e){
+      buttons.forEach(button => button.classList.remove('active'));
+      e.currentTarget.classList.add('active');
+    });
+  });
+}
+
+renderMailboxList();
 renderMailboxMenu();
+addClickHandler();
+
+renderInboxMenu();
+
+
+
+/*
+
+if (e.currentTarget instanceof HTMLElement) {
+  state.selectedMailbox = e.currentTarget.dataset.mailbox;
+}
+
+
+
+
+
+
+
+	$('.category-list .category-item').click(function(){
+		var buttonSelect = $('.category-select .category-item');
+		var allList = $('.category-list');
+		var catSpecific = $('.category-details');
+		var catSelect = $('.category-select');
+
+		var me = $(this);
+		var category = me.data('category');
+
+		allList.hide();
+		catSpecific.children().hide();
+		catSpecific.children().filter(function() {
+			return $(this).data('category') === category;
+		}).show();
+		catSpecific.show();
+
+		catSelect.addClass('active');
+
+		mapState(me);
+		var note = me.data('label');
+		console.log(me, note);
+
+		buttonSelect.removeClass('active');
+		buttonSelect.filter(function() {
+			return $(this).data('category') === category;
+		}).addClass('active');
+	});
+
+
+
+
+	// change state of graph based on all or specific category showing
+	function mapState(toggle){
+		var currentGraphCat = $(toggle.attr('data-target'));
+		var assignments = currentGraphCat.find('.assignment-bar');
+		var graph = $('.grade-graph');
+		var graphCat = $('.category-graph');
+
+		if(toggle.data('target') === 'all'){
+			graph.removeClass('active-category');
+			graphCat.removeClass('active');
+		} else {
+			graphCat.not(currentGraphCat).removeClass('active').addClass('collapsed');
+			currentGraphCat.addClass('active').removeClass('collapsed');
+			graph.addClass('active-category');
+			console.log(currentGraphCat);
+		}
+
+		gb.update_graph();
+	}
+*/
