@@ -1,5 +1,30 @@
 import store from './store';
 
+function renderMailboxList() {
+  var mailboxes = Object.keys(store.mailboxes);
+
+  return mailboxes.map(function(mailbox){
+  console.log(mailbox);
+    return `
+    <li>
+      <button class="menu-item" type="button">${mailbox}</button>
+    </li>
+    `;
+  }).join('');
+}
+
+function renderMailboxMenu() {
+  console.log(mailboxMenu, 'test');
+  var mailboxMenu = `
+    <ul class="mailbox-list">
+      ${renderMailboxList()}
+    </ul>
+  `;
+
+  var container = document.querySelector('.mailbox-list-container');
+  if (container != null) container.innerHTML = mailboxMenu;
+}
+
 function renderThreadList() {
   var inbox = store.mailboxes.INBOX;
   var threadIDs = inbox.threadIds;
@@ -44,3 +69,6 @@ function renderInboxMenu() {
 }
 
 renderInboxMenu();
+renderMailboxList();
+
+renderMailboxMenu();
