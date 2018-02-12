@@ -3,10 +3,10 @@ import store from './store';
 function renderMailboxList() {
   var mailboxes = Object.keys(store.mailboxes);
 
-  return mailboxes.map(function(mailbox){
+  return mailboxes.map((mailbox) => {
     return `
-    <li>
-      <button class="menu-item" type="button" data-mailbox="${mailbox}">${mailbox}</button>
+    <li class="mailbox-item">
+      <button class="menu-item" type="button" data-mailbox="${mailbox}">${formatMailbox(mailbox)}</button>
     </li>
     `;
   }).join('');
@@ -23,9 +23,9 @@ function renderMailboxMenu() {
   if (container != null) container.innerHTML = mailboxMenu;
 }
 
-function renderThreadList() {
-  var inbox = store.mailboxes.INBOX;
-  var threadIDs = inbox.threadIds;
+function renderThreadList(currentMailbox) {
+  var mailbox = store.mailboxes[currentMailbox];
+  var threadIDs = mailbox.threadIds;
   var messages = store.messages;
 
   return threadIDs.map((id) => {
@@ -50,15 +50,11 @@ function renderThreadList() {
   }).join('');
 }
 
-function formatSender(sender) {
-  return sender.split(" \\")[0];
-}
-
-function renderInboxMenu() {
+function renderThreadMenu(currentMailbox) {
   var inboxMenuContents = `
-    <h2 class="email-header">Inbox</h2>
+    <h2 class="email-header">${formatMailbox(currentMailbox)}</h2>
     <ul class="email-list">
-      ${renderThreadList()}
+      ${renderThreadList(currentMailbox)}
     </ul>
   `;
 
@@ -66,18 +62,40 @@ function renderInboxMenu() {
   if (container != null) container.innerHTML = inboxMenuContents;
 }
 
+function formatSender(sender) {
+  return sender.split(" \\")[0];
+}
+
+function formatMailbox(mailbox) {
+  var removeCatLabel = mailbox.replace('CATEGORY_','');
+  var makeLower = removeCatLabel.toLowerCase();
+  var capFirst = makeLower.charAt(0).toUpperCase();
+  var minusFirst = makeLower.slice(1);
+
+  return capFirst + minusFirst;
+}
+
+
 function addClickHandler() {
   var buttons = document.querySelectorAll('[data-mailbox]');
 
-  buttons.forEach(function(button){
+  buttons.forEach((button) => {
     if(button.dataset.mailbox === 'INBOX'){
-      button.classList.add('active');
-      renderThreadList(button.dataset.mailbox);
+      var currentMailbox = button.dataset.mailbox;
+
+      button.parentElement.classList.add('active');
+      renderThreadList(currentMailbox);
+      renderThreadMenu(currentMailbox);
     }
 
-    button.addEventListener('click', function(e){
-      buttons.forEach(button => button.classList.remove('active'));
-      e.currentTarget.classList.add('active');
+    button.addEventListener('click', (e) => {
+      var currentButton = e.currentTarget;
+      var currentMailbox = e.currentTarget.dataset.mailbox;
+
+      buttons.forEach(button => button.parentElement.classList.remove('active'));
+      currentButton.parentElement.classList.add('active');
+      renderThreadList(currentMailbox);
+      renderThreadMenu(currentMailbox);
     });
   });
 }
@@ -85,71 +103,3 @@ function addClickHandler() {
 renderMailboxList();
 renderMailboxMenu();
 addClickHandler();
-
-renderInboxMenu();
-
-
-
-/*
-
-if (e.currentTarget instanceof HTMLElement) {
-  state.selectedMailbox = e.currentTarget.dataset.mailbox;
-}
-
-
-
-
-
-
-
-	$('.category-list .category-item').click(function(){
-		var buttonSelect = $('.category-select .category-item');
-		var allList = $('.category-list');
-		var catSpecific = $('.category-details');
-		var catSelect = $('.category-select');
-
-		var me = $(this);
-		var category = me.data('category');
-
-		allList.hide();
-		catSpecific.children().hide();
-		catSpecific.children().filter(function() {
-			return $(this).data('category') === category;
-		}).show();
-		catSpecific.show();
-
-		catSelect.addClass('active');
-
-		mapState(me);
-		var note = me.data('label');
-		console.log(me, note);
-
-		buttonSelect.removeClass('active');
-		buttonSelect.filter(function() {
-			return $(this).data('category') === category;
-		}).addClass('active');
-	});
-
-
-
-
-	// change state of graph based on all or specific category showing
-	function mapState(toggle){
-		var currentGraphCat = $(toggle.attr('data-target'));
-		var assignments = currentGraphCat.find('.assignment-bar');
-		var graph = $('.grade-graph');
-		var graphCat = $('.category-graph');
-
-		if(toggle.data('target') === 'all'){
-			graph.removeClass('active-category');
-			graphCat.removeClass('active');
-		} else {
-			graphCat.not(currentGraphCat).removeClass('active').addClass('collapsed');
-			currentGraphCat.addClass('active').removeClass('collapsed');
-			graph.addClass('active-category');
-			console.log(currentGraphCat);
-		}
-
-		gb.update_graph();
-	}
-*/

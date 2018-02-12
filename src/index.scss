@@ -1,7 +1,8 @@
 // Variables
 $gray: #ccc;
 $lightgray: #eee;
-
+$green: #00797C;
+$light-green: #9CE2C5;
 $font: 'Playfair Display', serif;
 
 // Base styles
@@ -74,4 +75,36 @@ body {
   align-items: center;
   display: flex;
   justify-content: space-between;
+}
+
+.mailbox-list-container {
+  background-color: $green;
+  padding: 1rem;
+}
+
+.mailbox-list {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.mailbox-item {
+  border-left: 3px solid $green;
+  padding: .15rem .5rem;
+  margin-bottom: .5rem;
+  list-style: none;
+  color: white;
+
+  button {
+    font: 800 14px/14px $font;
+    background-color: $green;
+    border: none;
+    color: inherit;
+    padding: 0;
+  }
+
+  &.active {
+    border-left: 3px solid $light-green;
+    color: $light-green;
+  }
 }
