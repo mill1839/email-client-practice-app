@@ -28,3 +28,10 @@ export default class Base64 {
     return nonUrlSafeBase64.replace(/\//g, '_').replace(/\+/g, '-');
   }
 }
+
+
+//IMORT THIS FILE (BASE64) FROM UTILITY Base64.js
+// Base64.decode('data') ; data can be whatever variable i choose to represent data in object
+//
+// get parts by mimetype
+//
